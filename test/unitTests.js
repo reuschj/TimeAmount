@@ -1,8 +1,8 @@
-const { expect } = require('chai');
-const { TimeAmount, TimeUnit } = require('../dist');
+const { expect } = require("chai");
+const { TimeAmount, TimeUnit } = require("../dist");
 
-describe('TimeAmount works as expected.', () => {
-  it('can store a precise number with unit and provide conversions.', () => {
+describe("TimeAmount works as expected:", () => {
+  it("can store a precise number with unit and provide conversions.", () => {
     const timeAmount01 = new TimeAmount(4.5655, TimeUnit.Second);
     expect(timeAmount01.amount).to.equal(4.5655);
     expect(timeAmount01.unit).to.equal(TimeUnit.Second);
@@ -21,8 +21,27 @@ describe('TimeAmount works as expected.', () => {
     expect(timeAmount01.decades).to.equal(0.000000014467196491494917);
     expect(timeAmount01.centuries).to.equal(0.0000000014467196491494917);
     expect(timeAmount01.millenia).to.equal(0.00000000014467196491494918);
+    //
+    const timeAmount02 = new TimeAmount(60004, TimeUnit.Millisecond);
+    expect(timeAmount02.amount).to.equal(60004);
+    expect(timeAmount02.unit).to.equal(TimeUnit.Millisecond);
+    expect(timeAmount02.femtoseconds).to.equal(60004000000000000);
+    expect(timeAmount02.picoseconds).to.equal(60004000000000);
+    expect(timeAmount02.nanoseconds).to.equal(60004000000);
+    expect(timeAmount02.microseconds).to.equal(60004000);
+    expect(timeAmount02.milliseconds).to.equal(60004);
+    expect(timeAmount02.seconds).to.equal(60.004);
+    expect(timeAmount02.minutes).to.equal(1.0000666666666667);
+    expect(timeAmount02.hours).to.equal(0.016667777777777778);
+    expect(timeAmount02.days).to.equal(0.0006944907407407407);
+    expect(timeAmount02.weeks).to.equal(0.00009921296296296296);
+    expect(timeAmount02.months).to.equal(0.000022816944254315915);
+    expect(timeAmount02.years).to.equal(0.000001901412021192993);
+    expect(timeAmount02.decades).to.equal(0.0000001901412021192993);
+    expect(timeAmount02.centuries).to.equal(0.00000001901412021192993);
+    expect(timeAmount02.millenia).to.equal(0.0000000019014120211929932);
   });
-  it('can store a simple number with unit and provide conversions.', () => {
+  it("can store a simple number with unit and provide conversions.", () => {
     const timeAmount01 = new TimeAmount(4, TimeUnit.Hour);
     expect(timeAmount01.amount).to.equal(4);
     expect(timeAmount01.unit).to.equal(TimeUnit.Hour);
@@ -42,7 +61,17 @@ describe('TimeAmount works as expected.', () => {
     expect(timeAmount01.centuries).to.equal(0.000004563084645220169);
     expect(timeAmount01.millenia).to.equal(0.0000004563084645220169);
   });
-  it('can compare two time amounts.', () => {
+  it("can convert to a different time unit.", () => {
+    const timeAmount01 = new TimeAmount(24, TimeUnit.Hour);
+    const timeAmount02 = new TimeAmount(14, TimeUnit.Day);
+    const timeAmount03 = new TimeAmount(240, TimeUnit.Minute);
+    const timeAmount04 = new TimeAmount(45, TimeUnit.Second);
+    expect(timeAmount01.convertTo(TimeUnit.Day)).to.deep.equal(new TimeAmount(1, TimeUnit.Day));
+    expect(timeAmount02.convertTo(TimeUnit.Week)).to.deep.equal(new TimeAmount(2, TimeUnit.Week));
+    expect(timeAmount03.convertTo(TimeUnit.Hour)).to.deep.equal(new TimeAmount(4, TimeUnit.Hour));
+    expect(timeAmount04.convertTo(TimeUnit.Minute)).to.deep.equal(new TimeAmount(0.75, TimeUnit.Minute));
+  });
+  it("can compare two time amounts.", () => {
     const timeAmount01 = new TimeAmount(45.342, TimeUnit.Hour);
     const timeAmount02 = new TimeAmount(2.34, TimeUnit.Day);
     const timeAmount03 = new TimeAmount(24, TimeUnit.Hour);
@@ -58,32 +87,58 @@ describe('TimeAmount works as expected.', () => {
     expect(timeAmount01.isLessThanOrEqualTo(timeAmount02)).to.equal(true);
     expect(timeAmount03.isLessThan(timeAmount04)).to.equal(false);
   });
-  it('can add two time amounts.', () => {
+  it("can add time amounts.", () => {
     const timeAmount01 = new TimeAmount(2, TimeUnit.Hour);
     const timeAmount02 = new TimeAmount(15, TimeUnit.Minute);
     const timeAmount03 = new TimeAmount(24, TimeUnit.Hour);
     const timeAmount04 = new TimeAmount(1, TimeUnit.Day);
-    expect(timeAmount01.plus(timeAmount02).amount).to.equal(2.25);
-    expect(timeAmount01.plus(timeAmount02, timeAmount03).amount).to.equal(26.25);
-    expect(timeAmount01.plus(timeAmount02, timeAmount03, timeAmount02).amount).to.equal(26.5);
-    expect(timeAmount01.plus(timeAmount02, timeAmount03, timeAmount04).amount).to.equal(50.25);
+    expect(timeAmount01.plus(timeAmount02)).to.deep.equal(new TimeAmount(2.25, TimeUnit.Hour));
+    expect(timeAmount01.plus(timeAmount02, timeAmount03)).to.deep.equal(new TimeAmount(26.25, TimeUnit.Hour));
+    expect(timeAmount01.plus(timeAmount02, timeAmount03, timeAmount02)).to.deep.equal(new TimeAmount(26.5, TimeUnit.Hour));
+    expect(timeAmount01.plus(timeAmount02, timeAmount03, timeAmount04)).to.deep.equal(new TimeAmount(50.25, TimeUnit.Hour));
   });
-  it('can subtract two time amounts.', () => {
+  it("can subtract time amounts.", () => {
     const timeAmount01 = new TimeAmount(2, TimeUnit.Hour);
     const timeAmount02 = new TimeAmount(15, TimeUnit.Minute);
     const timeAmount03 = new TimeAmount(24, TimeUnit.Hour);
     const timeAmount04 = new TimeAmount(1, TimeUnit.Day);
-    expect(timeAmount01.minus(timeAmount02).amount).to.equal(1.75);
-    expect(timeAmount03.minus(timeAmount02, timeAmount01).amount).to.equal(21.75);
-    expect(timeAmount04.minus(timeAmount03).amount).to.equal(0);
+    expect(timeAmount01.minus(timeAmount02)).to.deep.equal(new TimeAmount(1.75, TimeUnit.Hour));
+    expect(timeAmount03.minus(timeAmount02, timeAmount01)).to.deep.equal(new TimeAmount(21.75, TimeUnit.Hour));
+    expect(timeAmount04.minus(timeAmount03)).to.deep.equal(new TimeAmount(0, TimeUnit.Day));
   });
-  it('can multiply two time amounts.', () => {
+  it("can multiply time amounts by a number.", () => {
     const timeAmount01 = new TimeAmount(30, TimeUnit.Second);
     const timeAmount02 = new TimeAmount(10, TimeUnit.Minute);
-    const timeAmount03 = new TimeAmount(24, TimeUnit.Hour);
-    const timeAmount04 = new TimeAmount(2, TimeUnit.Day);
-    expect(timeAmount02.times(timeAmount01).amount).to.equal(300);
-    // expect(timeAmount03.minus(timeAmount02, timeAmount01).amount).to.equal(21.75);
-    // expect(timeAmount04.minus(timeAmount03).amount).to.equal(0);
+    expect(timeAmount01.times(10)).to.deep.equal(new TimeAmount(300, TimeUnit.Second));
+    expect(timeAmount02.times(2)).to.deep.equal(new TimeAmount(20, TimeUnit.Minute));
+    expect(timeAmount02.times(2, 10)).to.deep.equal(new TimeAmount(200, TimeUnit.Minute));
+  });
+  it("can divide time amounts by a number.", () => {
+    const timeAmount01 = new TimeAmount(30, TimeUnit.Second);
+    const timeAmount02 = new TimeAmount(10, TimeUnit.Minute);
+    expect(timeAmount01.dividedBy(3)).to.deep.equal(new TimeAmount(10, TimeUnit.Second));
+    expect(timeAmount02.dividedBy(2)).to.deep.equal(new TimeAmount(5, TimeUnit.Minute));
+    expect(timeAmount01.dividedBy(3, 2)).to.deep.equal(new TimeAmount(5, TimeUnit.Second));
+  });
+  it("can divide time amounts by a time.", () => {
+    const timeAmount01 = new TimeAmount(30, TimeUnit.Second);
+    const timeAmount02 = new TimeAmount(10, TimeUnit.Minute);
+    const timeAmount03 = new TimeAmount(2, TimeUnit.Second);
+    const timeAmount04 = new TimeAmount(0.5, TimeUnit.Minute);
+    expect(timeAmount02.dividedByTime(timeAmount01)).to.equal(20);
+    expect(timeAmount02.dividedByTime(timeAmount04)).to.equal(20);
+    expect(timeAmount01.dividedByTime(timeAmount03)).to.equal(15);
+    expect(timeAmount04.dividedByTime(timeAmount03)).to.equal(15);
+    expect(timeAmount02.dividedByTime(timeAmount03)).to.equal(300);
+  });
+  it("can display", () => {
+    const timeAmount01 = new TimeAmount(45.4323, TimeUnit.Week);
+    const timeAmount02 = new TimeAmount(60004, TimeUnit.Millisecond);
+    const timeAmount03 = new TimeAmount(678, TimeUnit.Nanosecond);
+    const timeAmount04 = new TimeAmount(2.34456, TimeUnit.Decade);
+    expect(timeAmount01.description).to.equal("10 months, 1 week, 6 days, 15 hours, 37 minutes, 35 seconds, 40 milliseconds");
+    expect(timeAmount02.description).to.equal("1 minute, 4 milliseconds");
+    expect(timeAmount03.description).to.equal("678 nanoseconds");
+    expect(timeAmount04.description).to.equal("2 decades, 3 years, 5 months, 1 week, 3 days, 13 hours, 37 minutes, 46 seconds, 559 milliseconds, 999 microseconds, 992 nanoseconds, 773 picoseconds, 555 femtoseconds");
   });
 });

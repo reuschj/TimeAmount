@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
 * Enum of time units
-* Stored value is the amount of time for that unit in seconds
+* The value is the amount of seconds in that unit
 */
 var TimeUnit;
 (function (TimeUnit) {
@@ -22,6 +22,25 @@ var TimeUnit;
     TimeUnit[TimeUnit["Centruy"] = 3155760000] = "Centruy";
     TimeUnit[TimeUnit["Millenium"] = 31557600000] = "Millenium";
 })(TimeUnit || (TimeUnit = {}));
+/**
+ * Gets a conversion value to use from a time unit
+ * This corrects sub-second values to the inverse (amount of that unit in one second)
+ * This is to avoid floating point rounding issues
+ * This will make different logic for subsecond conversion (divide where you would multiply or multiply where you would divide)
+ *
+ * @param {TimeUnit} timeUnit
+ * @returns {number}
+ */
+exports.getConversionValue = function (timeUnit) {
+    switch (timeUnit) {
+        case TimeUnit.Femtosecond: return 1000000000000000;
+        case TimeUnit.Picosecond: return 1000000000000;
+        case TimeUnit.Nanosecond: return 1000000000;
+        case TimeUnit.Microsecond: return 1000000;
+        case TimeUnit.Millisecond: return 1000;
+        default: return timeUnit;
+    }
+};
 /**
  * Assigns a integer position to each enum case
  *

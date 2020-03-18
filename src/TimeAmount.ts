@@ -1,4 +1,5 @@
-import TimeUnit, { getPreviousTimeUnit } from "./TimeUnit";
+import Big from "big.js";
+import TimeUnit, { getPreviousTimeUnit, getConversionValue } from "./TimeUnit";
 import TimeDescriptionSetup, { TimeDescriptionTemplateCreator, defaultTemplateCreator } from "./TimeDescriptionSetup";
 
 /**
@@ -17,7 +18,7 @@ class TimeAmount {
   constructor(amount: number, unit: TimeUnit = TimeUnit.Millisecond) {
     this._amount = amount;
     this._unit = unit;
-    this._base = amount * unit;
+    this._base = unit >= 1 ? amount * getConversionValue(unit) : amount / getConversionValue(unit);
   }
 
   // Amount -------------------------------------------------- /
@@ -29,8 +30,9 @@ class TimeAmount {
 
   /** @param {number} amount */
   set amount(amount: number) {
+    const { unit } = this;
     this._amount = amount;
-    this._base = amount * this._unit;
+    this._base = unit >= 1 ? amount * unit : getConversionValue(unit) / getConversionValue(unit);
   }
 
   // Unit -------------------------------------------------- /
@@ -42,40 +44,51 @@ class TimeAmount {
 
   /** @param {TimeUnit} unit */
   set unit(unit: TimeUnit) {
+    const { amount } = this;
     this._unit = unit;
-    this._base = this._amount * unit;
+    this._base = unit >= 1 ? amount * getConversionValue(unit) : amount / getConversionValue(unit);
   }
 
   // Conversions -------------------------------------------------- /
 
+  /**
+   * Creates a new Time Amount that is equal to the original but with a new unit
+   *
+   * @param {TimeUnit} timeUnit
+   * @returns {TimeAmount}
+   */
+  convertTo(timeUnit: TimeUnit): TimeAmount {
+    return TimeAmount.convert(this, timeUnit);
+  }
+
   /** @returns {number} */
   get femtoseconds(): number {
-    return (this._base / TimeUnit.Picosecond) / 0.001;
+    return Math.abs(this._base * getConversionValue(TimeUnit.Femtosecond));
   }
 
   /** @returns {number} */
   get picoseconds(): number {
-    return this._base / TimeUnit.Picosecond;
+    return Math.abs(this._base * getConversionValue(TimeUnit.Picosecond));
   }
 
   /** @returns {number} */
   get nanoseconds(): number {
-    return this._base / TimeUnit.Nanosecond;
+    return Math.abs(this._base * getConversionValue(TimeUnit.Nanosecond));
   }
 
   /** @returns {number} */
   get microseconds(): number {
-    return this._base / TimeUnit.Microsecond;
+    return Math.abs(this._base * getConversionValue(TimeUnit.Microsecond));
   }
 
   /** @returns {number} */
   get milliseconds(): number {
-    return this._base / TimeUnit.Millisecond;
+    return Math.abs(this._base * getConversionValue(TimeUnit.Millisecond));
   }
 
   /** @returns {number} */
   get seconds(): number {
-    return this._base / TimeUnit.Second;
+    return this._base * TimeUnit.Second;
   }
 
   /** @returns {number} */
@@ -168,93 +181,92 @@ class TimeAmount {
   // Combination -------------------------------------------------- /
 
   /**
-  * @param {TimeAmount} amount
+  * @param {TimeAmount} timeAmounts
   * @returns {TimeAmount}
   */
-  plus(...amounts: Array<TimeAmount>): TimeAmount {
+  plus(...timeAmounts: Array<TimeAmount>): TimeAmount {
     const { seconds, unit } = this;
-    const total = amounts.reduce((accumulator: number, amount: TimeAmount) => accumulator + amount.seconds, seconds);
+    const total = timeAmounts.reduce((accumulator: number, timeAmount: TimeAmount) => accumulator + timeAmount.seconds, seconds);
     return new TimeAmount(total / unit, unit);
   }
 
   /**
-  * @param {TimeAmount} amount
+  * @param {TimeAmount} timeAmounts
   * @returns {TimeAmount}
   */
-  minus(...amounts: Array<TimeAmount>): TimeAmount {
+  minus(...timeAmounts: Array<TimeAmount>): TimeAmount {
     const { seconds, unit } = this;
-    const total = amounts.reduce((accumulator: number, amount: TimeAmount) => accumulator - amount.seconds, seconds);
+    const total = timeAmounts.reduce((accumulator: number, timeAmount: TimeAmount) => accumulator - timeAmount.seconds, seconds);
     return new TimeAmount(total / unit, unit);
   }
 
   /**
-  * @param {number|TimeAmount} amount
+  * @param {number} multipliers
   * @returns {TimeAmount}
   */
-  times(...amounts: Array<number|TimeAmount>): TimeAmount {
-    const { seconds, unit } = this;
-    const total = amounts.reduce((accumulator: number, amount: number|TimeAmount) => {
-      if (amount instanceof TimeAmount) {
-        return accumulator * amount.seconds;
-      }
-      return accumulator * amount;
-    }, seconds);
-    return new TimeAmount(total / unit, unit);
+  times(...multipliers: Array<number>): TimeAmount {
+    const { amount, unit } = this;
+    const total = multipliers.reduce((accumulator: number, multiplier: number) => accumulator * multiplier, amount);
+    return new TimeAmount(total, unit);
   }
 
   /**
-  * @param {number|TimeAmount} amount
+  * @param {number} divisors
   * @returns {TimeAmount}
   */
-  dividedBy(...amounts: Array<number|TimeAmount>): TimeAmount {
+  dividedBy(...divisors: Array<number>): TimeAmount {
+    const { amount, unit } = this;
+    const total = divisors.reduce((accumulator: number, devisor: number) => accumulator / devisor, amount);
+    return new TimeAmount(total, unit);
+  }
+
+  /**
+  * @param {TimeAmount} timeAmounts
+  * @returns {number}
+  */
+  dividedByTime(...timeAmounts: Array<TimeAmount>): number {
     const { seconds, unit } = this;
-    const total = amounts.reduce((accumulator: number, amount: number|TimeAmount) => {
-      if (amount instanceof TimeAmount) {
-        return accumulator / amount.seconds;
-      }
-      return accumulator / amount;
-    }, seconds);
-    return new TimeAmount(total / unit, unit);
+    return timeAmounts.reduce((accumulator: number, timeAmount: TimeAmount) => accumulator / timeAmount.seconds, seconds);
   }
 
   // String representation -------------------------------------------------- /
 
   /**
-   * Gets a string description with overridable setup options
-   *
-   * @param setup
-   * @returns {string}
-   */
+  * Gets a string description with overridable setup options
+  *
+  * @param setup
+  * @returns {string}
+  */
   getDescription(setup: TimeDescriptionSetup = {}): string {
     return TimeAmount.getDescription(this, setup);
   }
 
   /**
-   * Default description
-   *
-   * @returns {string}
-   */
+  * Default description
+  *
+  * @returns {string}
+  */
   get description(): string {
     return this.getDescription();
   }
 
   /**
-   * @override
-   * String representation
-   *
-   * @returns {string}
-   */
+  * @override
+  * String representation
+  *
+  * @returns {string}
+  */
   toString(): string {
     return this.getDescription();
   }
 
   /**
-   * Utility to get time description
-   *
-   * @param {TimeAmount} timeAmount
-   * @param {TimeDescriptionSetup}
-   */
-  static getDescription(timeAmount: TimeAmount, { templateCreator, preciseTo = TimeUnit.Femtosecond }: TimeDescriptionSetup = {}): string {
+  * Utility to get time description
+  *
+  * @param {TimeAmount} timeAmount
+  * @param {TimeDescriptionSetup}
+  */
+  static getDescription(timeAmount: TimeAmount, { templateCreator, preciseTo = TimeUnit.Femtosecond, levelLimit }: TimeDescriptionSetup = {}): string {
     const makeDescriptionString: TimeDescriptionTemplateCreator = templateCreator ?? defaultTemplateCreator;
     const descriptionParts = [];
     let unit: TimeUnit;
@@ -309,25 +321,49 @@ class TimeAmount {
       }
     };
     const amount = getAmount();
+    const roundingThreshold = 0.000001;
     let currentAmount: number = amount;
     let currentUnit: TimeUnit|null = unit;
     let remainder: number|null = null;
-    while (currentUnit !== null && currentUnit >= preciseTo && (remainder === null || (remainder > 0 && (Math.abs(remainder - Math.round(remainder)) > 0.00000001)))) {
-      const previousAmount = currentAmount;
-      currentAmount = Math.floor(currentAmount);
+    while (currentUnit !== null && currentUnit >= preciseTo && (remainder === null || remainder > 0) && (!levelLimit || (levelLimit && descriptionParts.length >= levelLimit))) {
+      let previousAmount: number;
+      const roundedAmount = Math.round(currentAmount);
+      if (Math.abs(currentAmount - roundedAmount) < roundingThreshold) {
+        previousAmount = roundedAmount;
+        currentAmount = roundedAmount;
+      } else {
+        previousAmount = currentAmount;
+        currentAmount = Math.floor(currentAmount);
+      }
       if (currentAmount > 0) {
         descriptionParts.push(makeDescriptionString(currentAmount, currentUnit));
         remainder = previousAmount % currentAmount;
       } else {
         remainder = previousAmount;
       }
+      const roundedRemainder = Math.round(remainder);
+      if (Math.abs(roundedRemainder - remainder) < roundingThreshold) remainder = roundedRemainder;
       const nextUnitDown = getPreviousTimeUnit(currentUnit);
       if (currentUnit && nextUnitDown) {
-        currentAmount = (currentUnit / nextUnitDown) * remainder;
+        const currentAmountInSeconds = currentUnit >= 1 ? remainder * getConversionValue(currentUnit) : remainder / getConversionValue(currentUnit);
+        currentAmount = nextUnitDown >= 1 ? currentAmountInSeconds / getConversionValue(nextUnitDown) : currentAmountInSeconds * getConversionValue(nextUnitDown);
       }
       currentUnit = nextUnitDown;
     }
     return descriptionParts.join(", ");
+  }
+
+  /**
+   * Creates a new Time Amount that is equal to the original but with a new unit
+   *
+   * @param {TimeAmount} timeAmount
+   * @param {TimeUnit} timeUnit
+   * @returns {TimeAmount}
+   */
+  static convert(timeAmount: TimeAmount, timeUnit: TimeUnit): TimeAmount {
+    const { _base: base } = timeAmount;
+    const amount = timeUnit >= 1 ? base / getConversionValue(timeUnit) : base * getConversionValue(timeUnit);
+    return new TimeAmount(amount, timeUnit);
   }
 }
 

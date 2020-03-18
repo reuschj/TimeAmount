@@ -22,7 +22,7 @@ var TimeAmount = /** @class */ (function () {
         if (unit === void 0) { unit = TimeUnit_1.default.Millisecond; }
         this._amount = amount;
         this._unit = unit;
-        this._base = amount * unit;
+        this._base = unit >= 1 ? amount * TimeUnit_1.getConversionValue(unit) : amount / TimeUnit_1.getConversionValue(unit);
     }
     Object.defineProperty(TimeAmount.prototype, "amount", {
         // Amount -------------------------------------------------- /
@@ -32,8 +32,9 @@ var TimeAmount = /** @class */ (function () {
         },
         /** @param {number} amount */
         set: function (amount) {
+            var unit = this.unit;
             this._amount = amount;
-            this._base = amount * this._unit;
+            this._base = unit >= 1 ? amount * unit : TimeUnit_1.getConversionValue(unit) / TimeUnit_1.getConversionValue(unit);
         },
         enumerable: true,
         configurable: true
@@ -46,17 +47,27 @@ var TimeAmount = /** @class */ (function () {
         },
         /** @param {TimeUnit} unit */
         set: function (unit) {
+            var amount = this.amount;
             this._unit = unit;
-            this._base = this._amount * unit;
+            this._base = unit >= 1 ? amount * TimeUnit_1.getConversionValue(unit) : amount / TimeUnit_1.getConversionValue(unit);
         },
         enumerable: true,
         configurable: true
     });
+    // Conversions -------------------------------------------------- /
+    /**
+     * Creates a new Time Amount that is equal to the original but with a new unit
+     *
+     * @param {TimeUnit} timeUnit
+     * @returns {TimeAmount}
+     */
+    TimeAmount.prototype.convertTo = function (timeUnit) {
+        return TimeAmount.convert(this, timeUnit);
+    };
     Object.defineProperty(TimeAmount.prototype, "femtoseconds", {
-        // Conversions -------------------------------------------------- /
         /** @returns {number} */
         get: function () {
-            return (this._base / TimeUnit_1.default.Picosecond) / 0.001;
+            return Math.abs(this._base * TimeUnit_1.getConversionValue(TimeUnit_1.default.Femtosecond));
         },
         enumerable: true,
         configurable: true
@@ -64,7 +75,7 @@ var TimeAmount = /** @class */ (function () {
     Object.defineProperty(TimeAmount.prototype, "picoseconds", {
         /** @returns {number} */
         get: function () {
-            return this._base / TimeUnit_1.default.Picosecond;
+            return Math.abs(this._base * TimeUnit_1.getConversionValue(TimeUnit_1.default.Picosecond));
         },
         enumerable: true,
         configurable: true
@@ -72,7 +83,7 @@ var TimeAmount = /** @class */ (function () {
     Object.defineProperty(TimeAmount.prototype, "nanoseconds", {
         /** @returns {number} */
         get: function () {
-            return this._base / TimeUnit_1.default.Nanosecond;
+            return Math.abs(this._base * TimeUnit_1.getConversionValue(TimeUnit_1.default.Nanosecond));
         },
         enumerable: true,
         configurable: true
@@ -80,7 +91,7 @@ var TimeAmount = /** @class */ (function () {
     Object.defineProperty(TimeAmount.prototype, "microseconds", {
         /** @returns {number} */
         get: function () {
-            return this._base / TimeUnit_1.default.Microsecond;
+            return Math.abs(this._base * TimeUnit_1.getConversionValue(TimeUnit_1.default.Microsecond));
         },
         enumerable: true,
         configurable: true
@@ -88,7 +99,7 @@ var TimeAmount = /** @class */ (function () {
     Object.defineProperty(TimeAmount.prototype, "milliseconds", {
         /** @returns {number} */
         get: function () {
-            return this._base / TimeUnit_1.default.Millisecond;
+            return Math.abs(this._base * TimeUnit_1.getConversionValue(TimeUnit_1.default.Millisecond));
         },
         enumerable: true,
         configurable: true
@@ -96,7 +107,7 @@ var TimeAmount = /** @class */ (function () {
     Object.defineProperty(TimeAmount.prototype, "seconds", {
         /** @returns {number} */
         get: function () {
-            return this._base / TimeUnit_1.default.Second;
+            return this._base * TimeUnit_1.default.Second;
         },
         enumerable: true,
         configurable: true
@@ -211,84 +222,86 @@ var TimeAmount = /** @class */ (function () {
     };
     // Combination -------------------------------------------------- /
     /**
-    * @param {TimeAmount} amount
+    * @param {TimeAmount} timeAmounts
     * @returns {TimeAmount}
     */
     TimeAmount.prototype.plus = function () {
-        var amounts = [];
+        var timeAmounts = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            amounts[_i] = arguments[_i];
+            timeAmounts[_i] = arguments[_i];
         }
         var _a = this, seconds = _a.seconds, unit = _a.unit;
-        var total = amounts.reduce(function (accumulator, amount) { return accumulator + amount.seconds; }, seconds);
+        var total = timeAmounts.reduce(function (accumulator, timeAmount) { return accumulator + timeAmount.seconds; }, seconds);
         return new TimeAmount(total / unit, unit);
     };
     /**
-    * @param {TimeAmount} amount
+    * @param {TimeAmount} timeAmounts
     * @returns {TimeAmount}
     */
     TimeAmount.prototype.minus = function () {
-        var amounts = [];
+        var timeAmounts = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            amounts[_i] = arguments[_i];
+            timeAmounts[_i] = arguments[_i];
         }
         var _a = this, seconds = _a.seconds, unit = _a.unit;
-        var total = amounts.reduce(function (accumulator, amount) { return accumulator - amount.seconds; }, seconds);
+        var total = timeAmounts.reduce(function (accumulator, timeAmount) { return accumulator - timeAmount.seconds; }, seconds);
         return new TimeAmount(total / unit, unit);
     };
     /**
-    * @param {number|TimeAmount} amount
+    * @param {number} multipliers
     * @returns {TimeAmount}
     */
     TimeAmount.prototype.times = function () {
-        var amounts = [];
+        var multipliers = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            amounts[_i] = arguments[_i];
+            multipliers[_i] = arguments[_i];
         }
-        var _a = this, seconds = _a.seconds, unit = _a.unit;
-        var total = amounts.reduce(function (accumulator, amount) {
-            if (amount instanceof TimeAmount) {
-                return accumulator * amount.seconds;
-            }
-            return accumulator * amount;
-        }, seconds);
-        return new TimeAmount(total / unit, unit);
+        var _a = this, amount = _a.amount, unit = _a.unit;
+        var total = multipliers.reduce(function (accumulator, multiplier) { return accumulator * multiplier; }, amount);
+        return new TimeAmount(total, unit);
     };
     /**
-    * @param {number|TimeAmount} amount
+    * @param {number} divisors
     * @returns {TimeAmount}
     */
     TimeAmount.prototype.dividedBy = function () {
-        var amounts = [];
+        var divisors = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            amounts[_i] = arguments[_i];
+            divisors[_i] = arguments[_i];
+        }
+        var _a = this, amount = _a.amount, unit = _a.unit;
+        var total = divisors.reduce(function (accumulator, devisor) { return accumulator / devisor; }, amount);
+        return new TimeAmount(total, unit);
+    };
+    /**
+    * @param {TimeAmount} timeAmounts
+    * @returns {number}
+    */
+    TimeAmount.prototype.dividedByTime = function () {
+        var timeAmounts = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            timeAmounts[_i] = arguments[_i];
         }
         var _a = this, seconds = _a.seconds, unit = _a.unit;
-        var total = amounts.reduce(function (accumulator, amount) {
-            if (amount instanceof TimeAmount) {
-                return accumulator / amount.seconds;
-            }
-            return accumulator / amount;
-        }, seconds);
-        return new TimeAmount(total / unit, unit);
+        return timeAmounts.reduce(function (accumulator, timeAmount) { return accumulator / timeAmount.seconds; }, seconds);
     };
     // String representation -------------------------------------------------- /
     /**
-     * Gets a string description with overridable setup options
-     *
-     * @param setup
-     * @returns {string}
-     */
+    * Gets a string description with overridable setup options
+    *
+    * @param setup
+    * @returns {string}
+    */
     TimeAmount.prototype.getDescription = function (setup) {
         if (setup === void 0) { setup = {}; }
         return TimeAmount.getDescription(this, setup);
     };
     Object.defineProperty(TimeAmount.prototype, "description", {
         /**
-         * Default description
-         *
-         * @returns {string}
-         */
+        * Default description
+        *
+        * @returns {string}
+        */
         get: function () {
             return this.getDescription();
         },
@@ -296,22 +309,22 @@ var TimeAmount = /** @class */ (function () {
         configurable: true
     });
     /**
-     * @override
-     * String representation
-     *
-     * @returns {string}
-     */
+    * @override
+    * String representation
+    *
+    * @returns {string}
+    */
     TimeAmount.prototype.toString = function () {
         return this.getDescription();
     };
     /**
-     * Utility to get time description
-     *
-     * @param {TimeAmount} timeAmount
-     * @param {TimeDescriptionSetup}
-     */
+    * Utility to get time description
+    *
+    * @param {TimeAmount} timeAmount
+    * @param {TimeDescriptionSetup}
+    */
     TimeAmount.getDescription = function (timeAmount, _a) {
-        var _b = _a === void 0 ? {} : _a, templateCreator = _b.templateCreator, _c = _b.preciseTo, preciseTo = _c === void 0 ? TimeUnit_1.default.Femtosecond : _c;
+        var _b = _a === void 0 ? {} : _a, templateCreator = _b.templateCreator, _c = _b.preciseTo, preciseTo = _c === void 0 ? TimeUnit_1.default.Femtosecond : _c, levelLimit = _b.levelLimit;
         var makeDescriptionString = templateCreator !== null && templateCreator !== void 0 ? templateCreator : TimeDescriptionSetup_1.defaultTemplateCreator;
         var descriptionParts = [];
         var unit;
@@ -380,12 +393,21 @@ var TimeAmount = /** @class */ (function () {
             }
         };
         var amount = getAmount();
+        var roundingThreshold = 0.000001;
         var currentAmount = amount;
         var currentUnit = unit;
         var remainder = null;
-        while (currentUnit !== null && currentUnit >= preciseTo && (remainder === null || (remainder > 0 && (Math.abs(remainder - Math.round(remainder)) > 0.00000001)))) {
-            var previousAmount = currentAmount;
-            currentAmount = Math.floor(currentAmount);
+        while (currentUnit !== null && currentUnit >= preciseTo && (remainder === null || remainder > 0) && (!levelLimit || (levelLimit && descriptionParts.length >= levelLimit))) {
+            var previousAmount = void 0;
+            var roundedAmount = Math.round(currentAmount);
+            if (Math.abs(currentAmount - roundedAmount) < roundingThreshold) {
+                previousAmount = roundedAmount;
+                currentAmount = roundedAmount;
+            }
+            else {
+                previousAmount = currentAmount;
+                currentAmount = Math.floor(currentAmount);
+            }
             if (currentAmount > 0) {
                 descriptionParts.push(makeDescriptionString(currentAmount, currentUnit));
                 remainder = previousAmount % currentAmount;
@@ -393,13 +415,29 @@ var TimeAmount = /** @class */ (function () {
             else {
                 remainder = previousAmount;
             }
+            var roundedRemainder = Math.round(remainder);
+            if (Math.abs(roundedRemainder - remainder) < roundingThreshold)
+                remainder = roundedRemainder;
             var nextUnitDown = TimeUnit_1.getPreviousTimeUnit(currentUnit);
             if (currentUnit && nextUnitDown) {
-                currentAmount = (currentUnit / nextUnitDown) * remainder;
+                var currentAmountInSeconds = currentUnit >= 1 ? remainder * TimeUnit_1.getConversionValue(currentUnit) : remainder / TimeUnit_1.getConversionValue(currentUnit);
+                currentAmount = nextUnitDown >= 1 ? currentAmountInSeconds / TimeUnit_1.getConversionValue(nextUnitDown) : currentAmountInSeconds * TimeUnit_1.getConversionValue(nextUnitDown);
             }
             currentUnit = nextUnitDown;
         }
         return descriptionParts.join(", ");
+    };
+    /**
+     * Creates a new Time Amount that is equal to the original but with a new unit
+     *
+     * @param {TimeAmount} timeAmount
+     * @param {TimeUnit} timeUnit
+     * @returns {TimeAmount}
+     */
+    TimeAmount.convert = function (timeAmount, timeUnit) {
+        var base = timeAmount._base;
+        var amount = timeUnit >= 1 ? base / TimeUnit_1.getConversionValue(timeUnit) : base * TimeUnit_1.getConversionValue(timeUnit);
+        return new TimeAmount(amount, timeUnit);
     };
     return TimeAmount;
 }());

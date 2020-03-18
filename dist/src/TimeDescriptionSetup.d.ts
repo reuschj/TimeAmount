@@ -17,5 +17,6 @@ export declare const defaultTemplateCreator: TimeDescriptionTemplateCreator;
 interface TimeDescriptionSetup {
     templateCreator?: TimeDescriptionTemplateCreator;
     preciseTo?: TimeUnit;
+    levelLimit?: number;
 }
 export default TimeDescriptionSetup;

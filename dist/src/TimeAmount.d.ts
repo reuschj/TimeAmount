@@ -21,6 +21,13 @@ declare class TimeAmount {
     get unit(): TimeUnit;
     /** @param {TimeUnit} unit */
     set unit(unit: TimeUnit);
+    /**
+     * Creates a new Time Amount that is equal to the original but with a new unit
+     *
+     * @param {TimeUnit} timeUnit
+     * @returns {TimeAmount}
+     */
+    convertTo(timeUnit: TimeUnit): TimeAmount;
     /** @returns {number} */
     get femtoseconds(): number;
     /** @returns {number} */
@@ -77,51 +84,64 @@ declare class TimeAmount {
     */
     isLessThanOrEqualTo(amount: TimeAmount): boolean;
     /**
-    * @param {TimeAmount} amount
+    * @param {TimeAmount} timeAmounts
     * @returns {TimeAmount}
     */
-    plus(...amounts: Array<TimeAmount>): TimeAmount;
+    plus(...timeAmounts: Array<TimeAmount>): TimeAmount;
     /**
-    * @param {TimeAmount} amount
+    * @param {TimeAmount} timeAmounts
     * @returns {TimeAmount}
     */
-    minus(...amounts: Array<TimeAmount>): TimeAmount;
+    minus(...timeAmounts: Array<TimeAmount>): TimeAmount;
     /**
-    * @param {number|TimeAmount} amount
+    * @param {number} multipliers
     * @returns {TimeAmount}
     */
-    times(...amounts: Array<number | TimeAmount>): TimeAmount;
+    times(...multipliers: Array<number>): TimeAmount;
     /**
-    * @param {number|TimeAmount} amount
+    * @param {number} divisors
     * @returns {TimeAmount}
     */
-    dividedBy(...amounts: Array<number | TimeAmount>): TimeAmount;
+    dividedBy(...divisors: Array<number>): TimeAmount;
     /**
-     * Gets a string description with overridable setup options
-     *
-     * @param setup
-     * @returns {string}
-     */
+    * @param {TimeAmount} timeAmounts
+    * @returns {number}
+    */
+    dividedByTime(...timeAmounts: Array<TimeAmount>): number;
+    /**
+    * Gets a string description with overridable setup options
+    *
+    * @param setup
+    * @returns {string}
+    */
     getDescription(setup?: TimeDescriptionSetup): string;
     /**
-     * Default description
-     *
-     * @returns {string}
-     */
+    * Default description
+    *
+    * @returns {string}
+    */
     get description(): string;
     /**
-     * @override
-     * String representation
-     *
-     * @returns {string}
-     */
+    * @override
+    * String representation
+    *
+    * @returns {string}
+    */
     toString(): string;
     /**
-     * Utility to get time description
+    * Utility to get time description
+    *
+    * @param {TimeAmount} timeAmount
+    * @param {TimeDescriptionSetup}
+    */
+    static getDescription(timeAmount: TimeAmount, { templateCreator, preciseTo, levelLimit }?: TimeDescriptionSetup): string;
+    /**
+     * Creates a new Time Amount that is equal to the original but with a new unit
      *
      * @param {TimeAmount} timeAmount
-     * @param {TimeDescriptionSetup}
+     * @param {TimeUnit} timeUnit
+     * @returns {TimeAmount}
      */
-    static getDescription(timeAmount: TimeAmount, { templateCreator, preciseTo }?: TimeDescriptionSetup): string;
+    static convert(timeAmount: TimeAmount, timeUnit: TimeUnit): TimeAmount;
 }
 export default TimeAmount;

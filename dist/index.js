@@ -14,6 +14,7 @@ var TimeAmount_1 = __importDefault(require("./src/TimeAmount"));
 exports.TimeAmount = TimeAmount_1.default;
 var TimeUnit_1 = __importStar(require("./src/TimeUnit"));
 exports.TimeUnit = TimeUnit_1.default;
+exports.getConversionValue = TimeUnit_1.getConversionValue;
 exports.getTimeUnitPosition = TimeUnit_1.getTimeUnitPosition;
 exports.getTimeUnitFromPosition = TimeUnit_1.getTimeUnitFromPosition;
 exports.getPreviousTimeUnit = TimeUnit_1.getPreviousTimeUnit;
