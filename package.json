@@ -1,0 +1,40 @@
+{
+  "name": "timeamount",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "mocha --reporter spec",
+    "refresh": "rm -rf node_modules/ && rm package-lock.json && npm install && tsc",
+    "clean": "git clean -d -x -f && rm -rf node_modules/ && rm package-lock.json && npm install && tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reuschj/TimeAmount.git"
+  },
+  "keywords": [
+    "time",
+    "time measurement",
+    "time unit"
+  ],
+  "author": "Justin Reusch <justin.reusch@walmart.com>",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/reuschj/TimeAmount/issues"
+  },
+  "homepage": "https://github.com/reuschj/TimeAmount#readme",
+  "devDependencies": {
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^13.9.1",
+    "@typescript-eslint/eslint-plugin": "^2.24.0",
+    "@typescript-eslint/parser": "^2.24.0",
+    "chai": "^4.2.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "mocha": "^7.1.0",
+    "typescript": "^3.8.3"
+  }
+}
