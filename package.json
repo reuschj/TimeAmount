@@ -19,7 +19,7 @@
     "time measurement",
     "time unit"
   ],
-  "author": "Justin Reusch <justin.reusch@walmart.com>",
+  "author": "Justin Reusch <reuschj@gmail.com>",
   "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/reuschj/TimeAmount/issues"
