@@ -324,7 +324,7 @@ class TimeAmount {
     let currentAmount: number = amount;
     let currentUnit: TimeUnit|null = unit;
     let remainder: number|null = null;
-    while (currentUnit !== null && currentUnit >= preciseTo && (remainder === null || remainder > 0) && (!levelLimit || (levelLimit && descriptionParts.length <= levelLimit))) {
+    while (currentUnit !== null && currentUnit >= preciseTo && (remainder === null || remainder > 0) && (!levelLimit || (levelLimit && descriptionParts.length < levelLimit))) {
       let previousAmount: number;
       const roundedAmount = Math.round(currentAmount);
       if (Math.abs(currentAmount - roundedAmount) < roundingThreshold) {
