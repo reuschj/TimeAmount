@@ -1,6 +1,6 @@
 {
   "name": "timeamount",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Allows you to store an amount of time with a set unit of time. It also provides built-in conversions to other time units.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
