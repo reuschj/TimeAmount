@@ -16,21 +16,21 @@ declare enum TimeUnit {
     Month = 2629800,
     Year = 31557600,
     Decade = 315576000,
-    Centruy = 3155760000,
-    Millenium = 31557600000
+    Century = 3155760000,
+    Millennium = 31557600000
 }
 /**
- * Gets a conversion value to use from a time unit
+ * Gets a non-decimal conversion value to use from a time unit
  * This corrects sub-second values to the inverse (amount of that unit in one second)
  * This is to avoid floating point rounding issues
- * This will make different logic for subsecond conversion (divide where you would multiply or multiply where you would divide)
+ * This will make different logic for sub-second conversion (divide where you would multiply or multiply where you would divide)
  *
  * @param {TimeUnit} timeUnit
  * @returns {number}
  */
 export declare const getConversionValue: (timeUnit: TimeUnit) => number;
 /**
- * Assigns a integer position to each enum case
+ * Gets a integer position for each enum case
  *
  * @param {TimeUnit} timeUnit
  * @returns {number|null}

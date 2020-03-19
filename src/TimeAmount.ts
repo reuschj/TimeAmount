@@ -1,4 +1,3 @@
-import Big from "big.js";
 import TimeUnit, { getPreviousTimeUnit, getConversionValue } from "./TimeUnit";
 import TimeDescriptionSetup, { TimeDescriptionTemplateCreator, defaultTemplateCreator } from "./TimeDescriptionSetup";
 
@@ -128,12 +127,12 @@ class TimeAmount {
 
   /** @returns {number} */
   get centuries(): number {
-    return this._base / TimeUnit.Centruy;
+    return this._base / TimeUnit.Century;
   }
 
   /** @returns {number} */
-  get millenia(): number {
-    return this._base / TimeUnit.Millenium;
+  get millennia(): number {
+    return this._base / TimeUnit.Millennium;
   }
 
   // Comparison -------------------------------------------------- /
@@ -178,7 +177,7 @@ class TimeAmount {
     return this.seconds <= amount.seconds;
   }
 
-  // Combination -------------------------------------------------- /
+  // Arithmetic -------------------------------------------------- /
 
   /**
   * @param {TimeAmount} timeAmounts
@@ -266,7 +265,7 @@ class TimeAmount {
   * @param {TimeAmount} timeAmount
   * @param {TimeDescriptionSetup}
   */
-  static getDescription(timeAmount: TimeAmount, { templateCreator, preciseTo = TimeUnit.Femtosecond, levelLimit }: TimeDescriptionSetup = {}): string {
+  static getDescription(timeAmount: TimeAmount, { templateCreator, templateJoiner, preciseTo = TimeUnit.Femtosecond, levelLimit }: TimeDescriptionSetup = {}): string {
     const makeDescriptionString: TimeDescriptionTemplateCreator = templateCreator ?? defaultTemplateCreator;
     const descriptionParts = [];
     let unit: TimeUnit;
@@ -297,9 +296,9 @@ class TimeAmount {
     } else if (timeAmount.decades < 10) {
       unit = TimeUnit.Decade;
     } else if (timeAmount.centuries < 10) {
-      unit = TimeUnit.Centruy;
+      unit = TimeUnit.Century;
     } else {
-      unit = TimeUnit.Millenium;
+      unit = TimeUnit.Millennium;
     }
     const getAmount = (): number => {
       switch (unit) {
@@ -316,8 +315,8 @@ class TimeAmount {
         case TimeUnit.Month: return timeAmount.months;
         case TimeUnit.Year: return timeAmount.years;
         case TimeUnit.Decade: return timeAmount.decades;
-        case TimeUnit.Centruy: return timeAmount.centuries;
-        default: return timeAmount.millenia;
+        case TimeUnit.Century: return timeAmount.centuries;
+        default: return timeAmount.millennia;
       }
     };
     const amount = getAmount();
@@ -350,7 +349,7 @@ class TimeAmount {
       }
       currentUnit = nextUnitDown;
     }
-    return descriptionParts.join(", ");
+    return descriptionParts.join(templateJoiner ?? ", ");
   }
 
   /**

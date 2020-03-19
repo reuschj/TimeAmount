@@ -57,7 +57,7 @@ declare class TimeAmount {
     /** @returns {number} */
     get centuries(): number;
     /** @returns {number} */
-    get millenia(): number;
+    get millennia(): number;
     /**
     * @param {TimeAmount} amount
     * @returns {boolean}
@@ -134,7 +134,7 @@ declare class TimeAmount {
     * @param {TimeAmount} timeAmount
     * @param {TimeDescriptionSetup}
     */
-    static getDescription(timeAmount: TimeAmount, { templateCreator, preciseTo, levelLimit }?: TimeDescriptionSetup): string;
+    static getDescription(timeAmount: TimeAmount, { templateCreator, templateJoiner, preciseTo, levelLimit }?: TimeDescriptionSetup): string;
     /**
      * Creates a new Time Amount that is equal to the original but with a new unit
      *

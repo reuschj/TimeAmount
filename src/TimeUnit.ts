@@ -16,15 +16,15 @@ enum TimeUnit {
   Month = 2629800,
   Year = 31557600,
   Decade = 315576000,
-  Centruy = 3155760000,
-  Millenium = 31557600000,
+  Century = 3155760000,
+  Millennium = 31557600000,
 }
 
 /**
- * Gets a conversion value to use from a time unit
+ * Gets a non-decimal conversion value to use from a time unit
  * This corrects sub-second values to the inverse (amount of that unit in one second)
  * This is to avoid floating point rounding issues
- * This will make different logic for subsecond conversion (divide where you would multiply or multiply where you would divide)
+ * This will make different logic for sub-second conversion (divide where you would multiply or multiply where you would divide)
  *
  * @param {TimeUnit} timeUnit
  * @returns {number}
@@ -41,7 +41,7 @@ export const getConversionValue = (timeUnit: TimeUnit): number => {
 };
 
 /**
- * Assigns a integer position to each enum case
+ * Gets a integer position for each enum case
  *
  * @param {TimeUnit} timeUnit
  * @returns {number|null}
@@ -61,8 +61,8 @@ export const getTimeUnitPosition = (timeUnit: TimeUnit): number|null => {
     case TimeUnit.Month: return 5;
     case TimeUnit.Year: return 6;
     case TimeUnit.Decade: return 7;
-    case TimeUnit.Centruy: return 8;
-    case TimeUnit.Millenium: return 9;
+    case TimeUnit.Century: return 8;
+    case TimeUnit.Millennium: return 9;
     default: return null;
   }
 };
@@ -88,8 +88,8 @@ export const getTimeUnitFromPosition = (position: number): TimeUnit|null => {
     case 5: return TimeUnit.Month;
     case 6: return TimeUnit.Year;
     case 7: return TimeUnit.Decade;
-    case 8: return TimeUnit.Centruy;
-    case 9: return TimeUnit.Millenium;
+    case 8: return TimeUnit.Century;
+    case 9: return TimeUnit.Millennium;
     default: return null;
   }
 };

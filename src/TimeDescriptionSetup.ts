@@ -28,8 +28,8 @@ export const defaultTemplateCreator: TimeDescriptionTemplateCreator = (amount: n
       case TimeUnit.Month: return unitAmount === 1 ? "month" : "months";
       case TimeUnit.Year: return unitAmount === 1 ? "year" : "years";
       case TimeUnit.Decade: return unitAmount === 1 ? "decade" : "decades";
-      case TimeUnit.Centruy: return unitAmount === 1 ? "century" : "centuries";
-      case TimeUnit.Millenium: return unitAmount === 1 ? "millenium" : "millenia";
+      case TimeUnit.Century: return unitAmount === 1 ? "century" : "centuries";
+      case TimeUnit.Millennium: return unitAmount === 1 ? "millennium" : "millennia";
       default: return "";
     }
   };
@@ -41,6 +41,7 @@ export const defaultTemplateCreator: TimeDescriptionTemplateCreator = (amount: n
 */
 interface TimeDescriptionSetup {
   templateCreator?: TimeDescriptionTemplateCreator,
+  templateJoiner?: string,
   preciseTo?: TimeUnit,
   levelLimit?: number,
 }

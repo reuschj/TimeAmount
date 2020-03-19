@@ -20,7 +20,7 @@ describe("TimeAmount works as expected:", () => {
     expect(timeAmount01.years).to.equal(0.00000014467196491494918);
     expect(timeAmount01.decades).to.equal(0.000000014467196491494917);
     expect(timeAmount01.centuries).to.equal(0.0000000014467196491494917);
-    expect(timeAmount01.millenia).to.equal(0.00000000014467196491494918);
+    expect(timeAmount01.millennia).to.equal(0.00000000014467196491494918);
     //
     const timeAmount02 = new TimeAmount(60004, TimeUnit.Millisecond);
     expect(timeAmount02.amount).to.equal(60004);
@@ -39,7 +39,7 @@ describe("TimeAmount works as expected:", () => {
     expect(timeAmount02.years).to.equal(0.000001901412021192993);
     expect(timeAmount02.decades).to.equal(0.0000001901412021192993);
     expect(timeAmount02.centuries).to.equal(0.00000001901412021192993);
-    expect(timeAmount02.millenia).to.equal(0.0000000019014120211929932);
+    expect(timeAmount02.millennia).to.equal(0.0000000019014120211929932);
   });
   it("can store a simple number with unit and provide conversions.", () => {
     const timeAmount01 = new TimeAmount(4, TimeUnit.Hour);
@@ -59,7 +59,7 @@ describe("TimeAmount works as expected:", () => {
     expect(timeAmount01.years).to.equal(0.0004563084645220169);
     expect(timeAmount01.decades).to.equal(0.00004563084645220169);
     expect(timeAmount01.centuries).to.equal(0.000004563084645220169);
-    expect(timeAmount01.millenia).to.equal(0.0000004563084645220169);
+    expect(timeAmount01.millennia).to.equal(0.0000004563084645220169);
   });
   it("can convert to a different time unit.", () => {
     const timeAmount01 = new TimeAmount(24, TimeUnit.Hour);

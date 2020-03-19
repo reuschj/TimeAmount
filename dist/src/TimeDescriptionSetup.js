@@ -29,8 +29,8 @@ exports.defaultTemplateCreator = function (amount, unit) {
             case TimeUnit_1.default.Month: return unitAmount === 1 ? "month" : "months";
             case TimeUnit_1.default.Year: return unitAmount === 1 ? "year" : "years";
             case TimeUnit_1.default.Decade: return unitAmount === 1 ? "decade" : "decades";
-            case TimeUnit_1.default.Centruy: return unitAmount === 1 ? "century" : "centuries";
-            case TimeUnit_1.default.Millenium: return unitAmount === 1 ? "millenium" : "millenia";
+            case TimeUnit_1.default.Century: return unitAmount === 1 ? "century" : "centuries";
+            case TimeUnit_1.default.Millennium: return unitAmount === 1 ? "millennium" : "millennia";
             default: return "";
         }
     };

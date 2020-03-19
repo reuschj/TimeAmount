@@ -19,14 +19,14 @@ var TimeUnit;
     TimeUnit[TimeUnit["Month"] = 2629800] = "Month";
     TimeUnit[TimeUnit["Year"] = 31557600] = "Year";
     TimeUnit[TimeUnit["Decade"] = 315576000] = "Decade";
-    TimeUnit[TimeUnit["Centruy"] = 3155760000] = "Centruy";
-    TimeUnit[TimeUnit["Millenium"] = 31557600000] = "Millenium";
+    TimeUnit[TimeUnit["Century"] = 3155760000] = "Century";
+    TimeUnit[TimeUnit["Millennium"] = 31557600000] = "Millennium";
 })(TimeUnit || (TimeUnit = {}));
 /**
- * Gets a conversion value to use from a time unit
+ * Gets a non-decimal conversion value to use from a time unit
  * This corrects sub-second values to the inverse (amount of that unit in one second)
  * This is to avoid floating point rounding issues
- * This will make different logic for subsecond conversion (divide where you would multiply or multiply where you would divide)
+ * This will make different logic for sub-second conversion (divide where you would multiply or multiply where you would divide)
  *
  * @param {TimeUnit} timeUnit
  * @returns {number}
@@ -42,7 +42,7 @@ exports.getConversionValue = function (timeUnit) {
     }
 };
 /**
- * Assigns a integer position to each enum case
+ * Gets a integer position for each enum case
  *
  * @param {TimeUnit} timeUnit
  * @returns {number|null}
@@ -62,8 +62,8 @@ exports.getTimeUnitPosition = function (timeUnit) {
         case TimeUnit.Month: return 5;
         case TimeUnit.Year: return 6;
         case TimeUnit.Decade: return 7;
-        case TimeUnit.Centruy: return 8;
-        case TimeUnit.Millenium: return 9;
+        case TimeUnit.Century: return 8;
+        case TimeUnit.Millennium: return 9;
         default: return null;
     }
 };
@@ -88,8 +88,8 @@ exports.getTimeUnitFromPosition = function (position) {
         case 5: return TimeUnit.Month;
         case 6: return TimeUnit.Year;
         case 7: return TimeUnit.Decade;
-        case 8: return TimeUnit.Centruy;
-        case 9: return TimeUnit.Millenium;
+        case 8: return TimeUnit.Century;
+        case 9: return TimeUnit.Millennium;
         default: return null;
     }
 };

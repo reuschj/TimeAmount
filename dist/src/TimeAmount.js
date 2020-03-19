@@ -171,15 +171,15 @@ var TimeAmount = /** @class */ (function () {
     Object.defineProperty(TimeAmount.prototype, "centuries", {
         /** @returns {number} */
         get: function () {
-            return this._base / TimeUnit_1.default.Centruy;
+            return this._base / TimeUnit_1.default.Century;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TimeAmount.prototype, "millenia", {
+    Object.defineProperty(TimeAmount.prototype, "millennia", {
         /** @returns {number} */
         get: function () {
-            return this._base / TimeUnit_1.default.Millenium;
+            return this._base / TimeUnit_1.default.Millennium;
         },
         enumerable: true,
         configurable: true
@@ -220,7 +220,7 @@ var TimeAmount = /** @class */ (function () {
     TimeAmount.prototype.isLessThanOrEqualTo = function (amount) {
         return this.seconds <= amount.seconds;
     };
-    // Combination -------------------------------------------------- /
+    // Arithmetic -------------------------------------------------- /
     /**
     * @param {TimeAmount} timeAmounts
     * @returns {TimeAmount}
@@ -324,7 +324,7 @@ var TimeAmount = /** @class */ (function () {
     * @param {TimeDescriptionSetup}
     */
     TimeAmount.getDescription = function (timeAmount, _a) {
-        var _b = _a === void 0 ? {} : _a, templateCreator = _b.templateCreator, _c = _b.preciseTo, preciseTo = _c === void 0 ? TimeUnit_1.default.Femtosecond : _c, levelLimit = _b.levelLimit;
+        var _b = _a === void 0 ? {} : _a, templateCreator = _b.templateCreator, templateJoiner = _b.templateJoiner, _c = _b.preciseTo, preciseTo = _c === void 0 ? TimeUnit_1.default.Femtosecond : _c, levelLimit = _b.levelLimit;
         var makeDescriptionString = templateCreator !== null && templateCreator !== void 0 ? templateCreator : TimeDescriptionSetup_1.defaultTemplateCreator;
         var descriptionParts = [];
         var unit;
@@ -368,10 +368,10 @@ var TimeAmount = /** @class */ (function () {
             unit = TimeUnit_1.default.Decade;
         }
         else if (timeAmount.centuries < 10) {
-            unit = TimeUnit_1.default.Centruy;
+            unit = TimeUnit_1.default.Century;
         }
         else {
-            unit = TimeUnit_1.default.Millenium;
+            unit = TimeUnit_1.default.Millennium;
         }
         var getAmount = function () {
             switch (unit) {
@@ -388,8 +388,8 @@ var TimeAmount = /** @class */ (function () {
                 case TimeUnit_1.default.Month: return timeAmount.months;
                 case TimeUnit_1.default.Year: return timeAmount.years;
                 case TimeUnit_1.default.Decade: return timeAmount.decades;
-                case TimeUnit_1.default.Centruy: return timeAmount.centuries;
-                default: return timeAmount.millenia;
+                case TimeUnit_1.default.Century: return timeAmount.centuries;
+                default: return timeAmount.millennia;
             }
         };
         var amount = getAmount();
@@ -425,7 +425,7 @@ var TimeAmount = /** @class */ (function () {
             }
             currentUnit = nextUnitDown;
         }
-        return descriptionParts.join(", ");
+        return descriptionParts.join(templateJoiner !== null && templateJoiner !== void 0 ? templateJoiner : ", ");
     };
     /**
      * Creates a new Time Amount that is equal to the original but with a new unit
