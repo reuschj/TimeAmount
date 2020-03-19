@@ -397,7 +397,7 @@ var TimeAmount = /** @class */ (function () {
         var currentAmount = amount;
         var currentUnit = unit;
         var remainder = null;
-        while (currentUnit !== null && currentUnit >= preciseTo && (remainder === null || remainder > 0) && (!levelLimit || (levelLimit && descriptionParts.length >= levelLimit))) {
+        while (currentUnit !== null && currentUnit >= preciseTo && (remainder === null || remainder > 0) && (!levelLimit || (levelLimit && descriptionParts.length <= levelLimit))) {
             var previousAmount = void 0;
             var roundedAmount = Math.round(currentAmount);
             if (Math.abs(currentAmount - roundedAmount) < roundingThreshold) {
