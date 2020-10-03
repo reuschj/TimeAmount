@@ -1,9 +1,21 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -36,7 +48,7 @@ var TimeAmount = /** @class */ (function () {
             this._amount = amount;
             this._base = unit >= 1 ? amount * unit : TimeUnit_1.getConversionValue(unit) / TimeUnit_1.getConversionValue(unit);
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(TimeAmount.prototype, "unit", {
@@ -51,7 +63,7 @@ var TimeAmount = /** @class */ (function () {
             this._unit = unit;
             this._base = unit >= 1 ? amount * TimeUnit_1.getConversionValue(unit) : amount / TimeUnit_1.getConversionValue(unit);
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     // Conversions -------------------------------------------------- /
@@ -69,7 +81,7 @@ var TimeAmount = /** @class */ (function () {
         get: function () {
             return Math.abs(this._base * TimeUnit_1.getConversionValue(TimeUnit_1.default.Femtosecond));
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(TimeAmount.prototype, "picoseconds", {
@@ -77,7 +89,7 @@ var TimeAmount = /** @class */ (function () {
         get: function () {
             return Math.abs(this._base * TimeUnit_1.getConversionValue(TimeUnit_1.default.Picosecond));
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(TimeAmount.prototype, "nanoseconds", {
@@ -85,7 +97,7 @@ var TimeAmount = /** @class */ (function () {
         get: function () {
             return Math.abs(this._base * TimeUnit_1.getConversionValue(TimeUnit_1.default.Nanosecond));
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(TimeAmount.prototype, "microseconds", {
@@ -93,7 +105,7 @@ var TimeAmount = /** @class */ (function () {
         get: function () {
             return Math.abs(this._base * TimeUnit_1.getConversionValue(TimeUnit_1.default.Microsecond));
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(TimeAmount.prototype, "milliseconds", {
@@ -101,7 +113,7 @@ var TimeAmount = /** @class */ (function () {
         get: function () {
             return Math.abs(this._base * TimeUnit_1.getConversionValue(TimeUnit_1.default.Millisecond));
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(TimeAmount.prototype, "seconds", {
@@ -109,7 +121,7 @@ var TimeAmount = /** @class */ (function () {
         get: function () {
             return this._base * TimeUnit_1.default.Second;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(TimeAmount.prototype, "minutes", {
@@ -117,7 +129,7 @@ var TimeAmount = /** @class */ (function () {
         get: function () {
             return this._base / TimeUnit_1.default.Minute;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(TimeAmount.prototype, "hours", {
@@ -125,7 +137,7 @@ var TimeAmount = /** @class */ (function () {
         get: function () {
             return this._base / TimeUnit_1.default.Hour;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(TimeAmount.prototype, "days", {
@@ -133,7 +145,7 @@ var TimeAmount = /** @class */ (function () {
         get: function () {
             return this._base / TimeUnit_1.default.Day;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(TimeAmount.prototype, "weeks", {
@@ -141,7 +153,7 @@ var TimeAmount = /** @class */ (function () {
         get: function () {
             return this._base / TimeUnit_1.default.Week;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(TimeAmount.prototype, "months", {
@@ -149,7 +161,7 @@ var TimeAmount = /** @class */ (function () {
         get: function () {
             return this._base / TimeUnit_1.default.Month;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(TimeAmount.prototype, "years", {
@@ -157,7 +169,7 @@ var TimeAmount = /** @class */ (function () {
         get: function () {
             return this._base / TimeUnit_1.default.Year;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(TimeAmount.prototype, "decades", {
@@ -165,7 +177,7 @@ var TimeAmount = /** @class */ (function () {
         get: function () {
             return this._base / TimeUnit_1.default.Decade;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(TimeAmount.prototype, "centuries", {
@@ -173,7 +185,7 @@ var TimeAmount = /** @class */ (function () {
         get: function () {
             return this._base / TimeUnit_1.default.Century;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(TimeAmount.prototype, "millennia", {
@@ -181,7 +193,7 @@ var TimeAmount = /** @class */ (function () {
         get: function () {
             return this._base / TimeUnit_1.default.Millennium;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     // Comparison -------------------------------------------------- /
@@ -305,7 +317,7 @@ var TimeAmount = /** @class */ (function () {
         get: function () {
             return this.getDescription();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     /**
