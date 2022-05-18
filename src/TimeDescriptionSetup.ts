@@ -1,16 +1,16 @@
 import TimeUnit from "./TimeUnit";
 
 /**
-* A function that takes an amount and time unit and formats a string for output
-*/
+ * A function that takes an amount and time unit and formats a string for output
+ */
 export type TimeDescriptionTemplateCreator = (amount: number, unit: TimeUnit) => string
 
 /**
  * A default template creator to use if none provided
  *
- * @param {number} amount
- * @param {TimeUnit} unit
- * @returns {string}
+ * @param amount
+ * @param unit
+ * @returns A string representation of the time amount.
  */
 export const defaultTemplateCreator: TimeDescriptionTemplateCreator = (amount: number, unit: TimeUnit): string => {
   const getUnitString = (unitAmount: number = amount, timeUnit: TimeUnit = unit): string => {
@@ -37,8 +37,8 @@ export const defaultTemplateCreator: TimeDescriptionTemplateCreator = (amount: n
 };
 
 /**
-* Inteface to describe a setup oject for a time description string builder
-*/
+ * Interface to describe a setup oject for a time description string builder
+ */
 interface TimeDescriptionSetup {
   templateCreator?: TimeDescriptionTemplateCreator,
   templateJoiner?: string,

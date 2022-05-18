@@ -1,7 +1,7 @@
 /**
-* Enum of time units
-* The value is the amount of seconds in that unit
-*/
+ * Enum of time units
+ * The value is the amount of seconds in that unit
+ */
 enum TimeUnit {
   Femtosecond = 0.000000000000001,
   Picosecond = 0.000000000001,
@@ -21,13 +21,12 @@ enum TimeUnit {
 }
 
 /**
- * Gets a non-decimal conversion value to use from a time unit
- * This corrects sub-second values to the inverse (amount of that unit in one second)
- * This is to avoid floating point rounding issues
- * This will make different logic for sub-second conversion (divide where you would multiply or multiply where you would divide)
+ * This corrects sub-second values to the inverse (amount of that unit in one second).
+ * This is to avoid floating point rounding issues.
+ * This will make different logic for sub-second conversion (divide where you would multiply or multiply where you would divide).
  *
- * @param {TimeUnit} timeUnit
- * @returns {number}
+ * @param timeUnit
+ * @returns A non-decimal conversion value to use from a time unit.
  */
 export const getConversionValue = (timeUnit: TimeUnit): number => {
   switch (timeUnit) {
@@ -36,17 +35,15 @@ export const getConversionValue = (timeUnit: TimeUnit): number => {
     case TimeUnit.Nanosecond: return 1000000000;
     case TimeUnit.Microsecond: return 1000000;
     case TimeUnit.Millisecond: return 1000;
-    default: return <number>timeUnit;
+    default: return timeUnit as number;
   }
 };
 
 /**
- * Gets a integer position for each enum case
- *
- * @param {TimeUnit} timeUnit
- * @returns {number|null}
+ * @param timeUnit
+ * @returns An integer position for each enum case
  */
-export const getTimeUnitPosition = (timeUnit: TimeUnit): number|null => {
+export const getTimeUnitPosition = (timeUnit: TimeUnit): number | undefined => {
   switch (timeUnit) {
     case TimeUnit.Femtosecond: return -5;
     case TimeUnit.Picosecond: return -4;
@@ -63,17 +60,15 @@ export const getTimeUnitPosition = (timeUnit: TimeUnit): number|null => {
     case TimeUnit.Decade: return 7;
     case TimeUnit.Century: return 8;
     case TimeUnit.Millennium: return 9;
-    default: return null;
+    default: return undefined;
   }
 };
 
 /**
- * Looks up the time unit associated with the given position integers
- *
- * @param {number} position
- * @returns {TimeUnit|null}
+ * @param position
+ * @returns The time unit associated with the given position integers
  */
-export const getTimeUnitFromPosition = (position: number): TimeUnit|null => {
+export const getTimeUnitFromPosition = (position: number): TimeUnit | undefined => {
   switch (position) {
     case -5: return TimeUnit.Femtosecond;
     case -4: return TimeUnit.Picosecond;
@@ -90,34 +85,30 @@ export const getTimeUnitFromPosition = (position: number): TimeUnit|null => {
     case 7: return TimeUnit.Decade;
     case 8: return TimeUnit.Century;
     case 9: return TimeUnit.Millennium;
-    default: return null;
+    default: return undefined;
   }
 };
 
 /**
- * Gets the next lower time unit (or looks a given number of positions down the chain)
- *
- * @param {TimeUnit} timeUnit
- * @param {number} decrement - Amount of positions to decrease by
- * @returns {TimeUnit|null}
+ * @param timeUnit
+ * @param decrement - Amount of positions to decrease by
+ * @returns The next lower time unit (or looks a given number of positions down the chain)
  */
-export const getPreviousTimeUnit = (timeUnit: TimeUnit, decrement: number = 1): TimeUnit|null => {
+export const getPreviousTimeUnit = (timeUnit: TimeUnit, decrement: number = 1): TimeUnit | undefined => {
   const position = getTimeUnitPosition(timeUnit);
-  const previousPosition = position !== null ? position - decrement : null;
-  return previousPosition !== null ? getTimeUnitFromPosition(previousPosition) : null;
+  const previousPosition = typeof position !== "undefined" ? position - decrement : undefined;
+  return typeof previousPosition !== "undefined" ? getTimeUnitFromPosition(previousPosition) : undefined;
 };
 
 /**
- * Gets the next higher time unit (or looks a given number of positions up the chain)
- *
- * @param {TimeUnit} timeUnit
- * @param {number} increment - Amount of positions to increase by
- * @returns {TimeUnit|null}
+ * @param timeUnit
+ * @param increment - Amount of positions to increase by
+ * @returns The next higher time unit (or looks a given number of positions up the chain)
  */
-export const getNextTimeUnit = (timeUnit: TimeUnit, increment: number = 1): TimeUnit|null => {
+export const getNextTimeUnit = (timeUnit: TimeUnit, increment: number = 1): TimeUnit | undefined => {
   const position = getTimeUnitPosition(timeUnit);
-  const nextPosition = position !== null ? position + increment : null;
-  return nextPosition !== null ? getTimeUnitFromPosition(nextPosition) : null;
+  const nextPosition = typeof position !== "undefined" ? position + increment : undefined;
+  return typeof nextPosition !== "undefined" ? getTimeUnitFromPosition(nextPosition) : undefined;
 };
 
 export default TimeUnit;
